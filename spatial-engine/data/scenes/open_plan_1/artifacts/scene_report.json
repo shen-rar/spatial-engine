@@ -1,0 +1,13 @@
+{
+  "scene_id": "open_plan",
+  "keyframes": 89,
+  "models": 1,
+  "registered_images": 76,
+  "points": 28422,
+  "mean_reprojection_px": 0.787,
+  "largest_view_direction_gap_deg": 194.6,
+  "metric_scale": 1.084173493658171,
+  "assumed_camera_height_m": 1.45,
+  "best_model_dir": "data\\scenes\\open_plan\\colmap\\0",
+  "keyframes_dir": "data\\scenes\\open_plan\\keyframes"
+}

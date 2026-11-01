@@ -1,0 +1,13 @@
+{
+  "scene_id": "beam_house",
+  "keyframes": 101,
+  "models": 2,
+  "registered_images": 101,
+  "points": 17890,
+  "mean_reprojection_px": 0.768,
+  "largest_view_direction_gap_deg": 356.5,
+  "metric_scale": 1.4004173760246406,
+  "assumed_camera_height_m": 1.45,
+  "best_model_dir": "data\\scenes\\beam_house\\colmap\\1",
+  "keyframes_dir": "data\\scenes\\beam_house\\keyframes"
+}

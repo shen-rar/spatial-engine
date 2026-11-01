@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+.eggs/
+dist/
+build/
+*.egg
+.env
+.venv/
+venv/
+env/
+
+# Node
+node_modules/
+dist/
+.DS_Store
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Logs
+*.log
+
+# Scene build intermediates (rebuilt by build_scene.py; COLMAP databases are 50-100 MB)
+spatial-engine/data/scenes/*/colmap/
+spatial-engine/data/scenes/*/keyframes/
+spatial-engine/data/scenes/demo_office/
+spatial-engine/site/
+spatial-engine/.wrangler/

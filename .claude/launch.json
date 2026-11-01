@@ -1,0 +1,49 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "backend",
+      "runtimeExecutable": "C:\\Users\\dhrut\\iitb\\spatial-engine\\.venv\\Scripts\\python.exe",
+      "runtimeArgs": [
+        "-m",
+        "uvicorn",
+        "backend.main:app",
+        "--app-dir",
+        "C:\\Users\\dhrut\\iitb\\spatial-engine",
+        "--port",
+        "8000"
+      ],
+      "cwd": "C:\\Users\\dhrut\\iitb\\spatial-engine",
+      "port": 8000
+    },
+    {
+      "name": "backend-8001",
+      "runtimeExecutable": "C:\\Users\\dhrut\\iitb\\spatial-engine\\.venv\\Scripts\\python.exe",
+      "runtimeArgs": ["-m", "uvicorn", "backend.main:app", "--app-dir", "C:\\Users\\dhrut\\iitb\\spatial-engine", "--port", "8001"],
+      "cwd": "C:\\Users\\dhrut\\iitb\\spatial-engine",
+      "port": 8001
+    },
+    {
+      "name": "frontend",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "--prefix",
+        "C:\\Users\\dhrut\\iitb\\spatial-engine\\frontend",
+        "run",
+        "dev"
+      ],
+      "cwd": "C:\\Users\\dhrut\\iitb\\spatial-engine\\frontend",
+      "port": 5173
+    },
+    {
+      "name": "frontend-8001",
+      "runtimeExecutable": "cmd",
+      "runtimeArgs": [
+        "/c",
+        "set API_PROXY_TARGET=http://localhost:8001&& npm --prefix C:/Users/dhrut/iitb/spatial-engine/frontend run dev -- --port 5175 --strictPort"
+      ],
+      "cwd": "C:/Users/dhrut/iitb/spatial-engine/frontend",
+      "port": 5175
+    }
+  ]
+}

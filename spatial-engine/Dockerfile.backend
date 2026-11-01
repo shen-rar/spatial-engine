@@ -1,0 +1,10 @@
+FROM python:3.11-slim
+WORKDIR /app
+RUN apt-get update && apt-get install -y --no-install-recommends libgl1 libglib2.0-0 && rm -rf /var/lib/apt/lists/*
+COPY pyproject.toml ./
+COPY backend ./backend
+RUN pip install --no-cache-dir numpy scipy opencv-python-headless trimesh fastapi "uvicorn[standard]" pydantic pycolmap
+COPY create_demo_scene.py run_pipeline.py train_splats.py ./
+RUN python create_demo_scene.py
+EXPOSE 8000
+CMD ["uvicorn", "backend.main:app", "--host", "0.0.0.0", "--port", "8000"]

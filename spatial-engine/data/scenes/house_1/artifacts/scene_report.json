@@ -1,0 +1,13 @@
+{
+  "scene_id": "house",
+  "keyframes": 133,
+  "models": 4,
+  "registered_images": 99,
+  "points": 12988,
+  "mean_reprojection_px": 0.771,
+  "largest_view_direction_gap_deg": 25.3,
+  "metric_scale": 2.0128356698881302,
+  "assumed_camera_height_m": 1.45,
+  "best_model_dir": "data\\scenes\\house\\colmap\\1",
+  "keyframes_dir": "data\\scenes\\house\\keyframes"
+}

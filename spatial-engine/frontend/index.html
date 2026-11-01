@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#0d0f12">
+  <title>Spatial Engine · Scene view</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0d0f12; --surface: rgba(22, 24, 29, 0.92); --surface-2: rgba(255, 255, 255, 0.04);
+      --edge: rgba(255, 255, 255, 0.08); --edge-strong: rgba(255, 255, 255, 0.14);
+      --text: #f3f4f6; --muted: #9aa1ad; --faint: #6b7280;
+      --accent: #3b82f6; --accent-hover: #2563eb; --accent-soft: rgba(59, 130, 246, 0.14);
+      --amber: #f59e0b; --coral: #ef6461; --ok: #22c55e; --gold: #f59e0b;
+      --radius: 10px; --radius-sm: 7px; --blur: blur(16px);
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.28);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { background: var(--bg); width: 100%; height: 100%; overflow: hidden; }
+    body { color: var(--text); font: 400 13px/1.45 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+           -webkit-font-smoothing: antialiased; font-feature-settings: 'cv11', 'ss01'; }
+    #canvas-container, #canvas-container canvas { position: fixed; inset: 0; width: 100vw; height: 100vh; display: block; }
+    .panel { background: var(--surface); backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
+             border: 1px solid var(--edge); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
+    .panel-label { font-size: 11px; font-weight: 600; color: var(--muted); letter-spacing: .02em;
+                   padding: 11px 14px 9px; border-bottom: 1px solid var(--edge); }
+    .eyebrow { font-size: 11px; font-weight: 600; letter-spacing: .02em; color: var(--muted); }
+    button { font-family: inherit; cursor: pointer; }
+    button:focus-visible, select:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+    kbd { font: 500 10px/1 'Inter', sans-serif; color: var(--muted); background: var(--surface-2); border: 1px solid var(--edge-strong);
+          border-bottom-width: 2px; border-radius: 5px; padding: 3px 5px; margin-left: 6px; min-width: 18px; text-align: center; display: inline-block; }
+
+    #hud { position: fixed; top: 16px; left: 16px; width: min(440px, calc(100vw - 32px)); padding: 14px 16px 14px; z-index: 10; pointer-events: none; }
+    #title { font: 600 19px/1.25 'Inter', sans-serif; letter-spacing: -.01em; flex: 1; min-width: 0;
+             white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    #subtitle { margin-top: 6px; color: var(--muted); font-size: 12px; }
+    .hud-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 8px; }
+    #scene-select { pointer-events: auto; max-width: 60%; background-color: var(--surface-2); color: var(--text); border: 1px solid var(--edge-strong);
+                    border-radius: var(--radius-sm); padding: 5px 28px 5px 10px; font: 500 12px 'Inter', sans-serif; cursor: pointer; outline: none;
+                    appearance: none; -webkit-appearance: none;
+                    background-image: linear-gradient(45deg, transparent 50%, var(--muted) 50%), linear-gradient(135deg, var(--muted) 50%, transparent 50%);
+                    background-position: calc(100% - 14px) 52%, calc(100% - 10px) 52%; background-size: 4px 4px; background-repeat: no-repeat; }
+    #scene-select:hover { border-color: rgba(255,255,255,.24); }
+    #scene-select option { background: #16181d; color: var(--text); }
+    .title-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    #style-toggle { pointer-events: auto; display: flex; flex: none; padding: 2px; border-radius: var(--radius-sm); background: var(--surface-2); border: 1px solid var(--edge); }
+    #style-toggle[hidden] { display: none; }
+    #style-toggle button { border: 0; background: transparent; color: var(--muted); font: 500 12px 'Inter', sans-serif; padding: 4px 10px; border-radius: 5px; }
+    #style-toggle button:hover { color: var(--text); }
+    #style-toggle button.on { background: rgba(255,255,255,.1); color: var(--text); box-shadow: 0 1px 2px rgba(0,0,0,.4); }
+    #style-toggle button[hidden] { display: none; }
+    #style-toggle #btn-overlay.on { background: var(--accent-soft); color: #93c5fd; }
+
+    #status-stamp { position: fixed; top: 16px; right: 16px; z-index: 12; padding: 5px 10px; border-radius: var(--radius-sm);
+                    background: var(--surface); border: 1px solid var(--edge); box-shadow: var(--shadow); backdrop-filter: var(--blur);
+                    font: 500 12px 'Inter', sans-serif; color: var(--text); display: flex; align-items: center; gap: 7px; }
+    #status-stamp::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--ok); }
+    #status-stamp span { color: var(--muted); }
+
+    #search-panel { position: fixed; top: 140px; left: 16px; width: min(440px, calc(100vw - 32px)); z-index: 10; }
+    .search-box { display: flex; align-items: center; gap: 8px; padding: 10px; }
+    .search-box input { flex: 1; min-width: 0; background: var(--surface-2); border: 1px solid var(--edge-strong); border-radius: var(--radius-sm);
+                        padding: 8px 11px; font: 13px 'Inter', sans-serif; color: var(--text); outline: none; }
+    .search-box input::placeholder { color: var(--faint); }
+    .search-box input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+    .search-box button { background: var(--accent); color: #fff; border: 0; border-radius: var(--radius-sm); padding: 8px 14px; font-weight: 600; font-size: 12px; }
+    .search-box button:hover { background: var(--accent-hover); }
+    .poi-results { display: none; max-height: 180px; overflow-y: auto; padding: 0 6px 6px; }
+    .poi-item { padding: 9px 10px; border-radius: var(--radius-sm); cursor: pointer; font-size: 12px; }
+    .poi-item:hover { background: var(--surface-2); }
+    .poi-item .label { font-weight: 600; }
+    .poi-item .meta { font-size: 11px; color: var(--muted); margin-top: 3px; }
+    .poi-message { font-size: 12px; padding: 8px; color: var(--muted); }
+    /* blueprint: every piece, grouped, filtered by the search box */
+    #obj-list { border-top: 1px solid var(--edge); }
+    #obj-list[hidden] { display: none; }
+    .obj-list-head { display: flex; justify-content: space-between; padding: 8px 14px; font-size: 11px; color: var(--faint); }
+    .obj-list-head span:first-child { color: var(--muted); font-weight: 500; }
+    #obj-list-items { max-height: min(340px, calc(100vh - 420px)); overflow-y: auto; padding: 0 6px 8px; scrollbar-width: thin;
+                      scrollbar-color: rgba(255,255,255,.18) transparent; }
+    .obj-group { position: sticky; top: 0; z-index: 1; padding: 8px 8px 4px; font-size: 11px; font-weight: 600; color: var(--muted);
+                 background: rgba(22,24,29,.98); }
+    .obj-group[hidden], .obj-row[hidden] { display: none; }
+    .obj-row { display: flex; width: 100%; align-items: baseline; justify-content: space-between; gap: 10px; text-align: left;
+               background: transparent; border: 0; border-radius: var(--radius-sm); padding: 7px 8px; color: var(--text); font-size: 13px; }
+    .obj-row .n { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .obj-row .m { flex: none; font-size: 11px; color: var(--faint); font-variant-numeric: tabular-nums; }
+    .obj-row:hover { background: rgba(255,255,255,.06); }
+    .obj-row.on { background: var(--accent-soft); }
+    .obj-row.on .n { color: #bfdbfe; }
+    .poi-message.error { color: var(--coral); }
+    .nav-info { display: none; padding: 10px 14px 12px; font-size: 12px; border-top: 1px solid var(--edge); }
+    .nav-info.active { display: block; }
+    .nav-info .row { display: flex; justify-content: space-between; margin: 3px 0; color: var(--muted); }
+    .nav-info .value { color: var(--text); font-weight: 600; font-variant-numeric: tabular-nums; }
+    #clear-path-btn { margin-top: 8px; background: transparent; border: 1px solid var(--edge-strong); color: var(--text); border-radius: var(--radius-sm); padding: 5px 10px; font-size: 12px; font-weight: 500; }
+    #clear-path-btn:hover { background: var(--surface-2); }
+
+    #ref-panel { position: fixed; top: 58px; right: 16px; width: 248px; z-index: 10; }
+    #ref-panel img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
+    #ref-panel small { display: block; padding: 8px 14px 10px; font-size: 11px; color: var(--muted); }
+    #ref-panel.empty { display: none; }
+
+    /* blueprint object card: replaces the right column while a piece is selected */
+    body.inspecting #ref-panel, body.inspecting #map-wrap, body.inspecting #center-hint { display: none; }
+    #obj-card { position: fixed; top: 58px; right: 16px; width: 288px; z-index: 15; }
+    #obj-card.hidden, #obj-tip.hidden { display: none; }
+    #obj-card .head { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--edge); }
+    #obj-card .head .panel-label { border: 0; }
+    #obj-card .head button { background: none; border: 0; color: var(--muted); font-size: 18px; line-height: 1; padding: 6px 12px; }
+    #obj-card .head button:hover { color: var(--text); }
+    #obj-photo { background: #0b0c0f; }
+    #obj-photo img { display: block; width: 100%; max-height: 220px; object-fit: contain; }
+    #obj-photo.empty img { display: none; }
+    #obj-photo.empty::after { content: 'No photo of this piece in the capture'; display: block; padding: 18px 14px; color: var(--muted); font-size: 12px; }
+    #obj-name { font-size: 16px; font-weight: 600; padding: 12px 14px 0; letter-spacing: -.005em; }
+    #obj-type { font-size: 12px; color: var(--muted); padding: 2px 14px 8px; text-transform: capitalize; }
+    #obj-dims { padding: 2px 14px 6px; }
+    #obj-dims .dim { display: grid; grid-template-columns: 1fr auto; column-gap: 10px; padding: 8px 0; border-top: 1px solid var(--edge); }
+    #obj-dims .dim span { color: var(--muted); font-size: 12px; }
+    #obj-dims .dim b { font-size: 13px; font-weight: 600; color: var(--text); text-align: right; font-variant-numeric: tabular-nums; }
+    #obj-dims .dim em { grid-column: 2; font-style: normal; font-size: 11px; color: var(--faint); text-align: right; font-variant-numeric: tabular-nums; }
+    #obj-dims .dim.typical b { color: var(--muted); font-weight: 500; }
+    #obj-card .note { font-size: 11px; color: var(--faint); padding: 0 14px 12px; line-height: 1.5; }
+    #obj-card .actions { display: flex; gap: 8px; padding: 0 14px 14px; }
+    #obj-card .actions > * { flex: 1; text-align: center; border-radius: var(--radius-sm); padding: 8px 10px; font-size: 12px; font-weight: 600;
+                             text-decoration: none; border: 1px solid var(--edge-strong); color: var(--text); background: var(--surface-2); }
+    #obj-card .actions > *:hover { background: rgba(255,255,255,.08); }
+    #obj-card .actions > .on { background: var(--accent); border-color: var(--accent); color: #fff; }
+    #obj-tip { position: fixed; z-index: 30; pointer-events: none; background: rgba(15,17,21,.95); border: 1px solid var(--edge-strong); color: var(--text);
+               border-radius: 6px; padding: 4px 8px; font-size: 12px; font-weight: 500; box-shadow: var(--shadow); }
+
+    #map-wrap { position: fixed; top: 316px; right: 16px; width: 248px; z-index: 10; }
+    #minimap { display: block; width: 248px; height: 248px; cursor: crosshair; background: #0b0c0f; }
+    #map-legend { display: flex; flex-wrap: wrap; gap: 6px 12px; padding: 10px 14px 12px; font-size: 11px; color: var(--muted); }
+    #map-legend span { display: inline-flex; align-items: center; white-space: nowrap; }
+    #map-legend i { display: inline-block; width: 8px; height: 8px; border-radius: 2px; margin-right: 6px; }
+    .sw-free { background: #8fd3c2; } .sw-obstacle { background: #f07167; } .sw-unknown { background: #2d3a48; }
+    .sw-path { background: #f0c75e; } .sw-route { background: #ffffff; } .sw-prop { background: #b79cff; }
+    #map-legend i.sw-you { background: #2563eb; border-radius: 50%; box-shadow: 0 0 0 1.5px #fff, 0 0 0 3px #0a0f14; }
+
+    #sandbox { position: fixed; left: 16px; bottom: 92px; width: 272px; z-index: 14; }
+    #sandbox.hidden, #sandbox-carry-actions.hidden, #reticle.hidden, #reticle-label.hidden, #carry-hint.hidden { display: none; }
+    .sb-head { display: flex; justify-content: space-between; align-items: center; padding: 12px 14px; font-weight: 600; font-size: 13px; border-bottom: 1px solid var(--edge); }
+    .sb-head em { font-size: 11px; font-weight: 500; font-style: normal; color: var(--muted); margin-left: 8px; }
+    #sandbox .panel-label { border-bottom: 0; padding-bottom: 0; }
+    #sandbox-close { background: transparent; border: 0; color: var(--muted); font-size: 18px; line-height: 1; }
+    #sandbox-close:hover { color: var(--text); }
+    #prop-palette { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; padding: 10px; }
+    #prop-palette button, #sandbox-carry-actions button, #sandbox-actions button {
+      background: var(--surface-2); color: var(--text); border: 1px solid var(--edge-strong); border-radius: var(--radius-sm);
+      padding: 8px 10px; font-size: 12px; font-weight: 500; text-align: left; }
+    #prop-palette button kbd { margin: 0 8px 0 0; }
+    #prop-palette button.on, #prop-palette button:hover, #sandbox-carry-actions button:hover, #sandbox-actions button:hover {
+      border-color: rgba(59,130,246,.6); background: var(--accent-soft); }
+    #sandbox-carry-actions { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; padding: 0 10px 10px; }
+    #sandbox-actions { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; padding: 0 10px 10px; }
+    #sandbox-actions button, #sandbox-carry-actions button { text-align: center; }
+    #sandbox-hint { padding: 10px 14px 12px; font-size: 11px; color: var(--muted); line-height: 1.8; border-top: 1px solid var(--edge); }
+    #sandbox-hint b { font-weight: 600; color: var(--text); }
+
+    #help { position: fixed; bottom: 16px; left: 16px; z-index: 10; max-width: 300px; padding: 9px 12px; font-size: 11px; color: var(--muted);
+            line-height: 2; pointer-events: none; background: var(--surface); backdrop-filter: var(--blur); border: 1px solid var(--edge);
+            border-radius: var(--radius); box-shadow: var(--shadow); }
+    #help b { font: 500 10px/1 'Inter', sans-serif; color: var(--text); background: var(--surface-2); border: 1px solid var(--edge-strong);
+              border-radius: 4px; padding: 2px 5px; margin: 0 3px 0 6px; }
+    #help b:first-child { margin-left: 0; }
+    #help span { display: block; color: var(--faint); }
+    @media (max-width: 1280px) { #help { display: none; } }
+
+    #center-hint { position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); z-index: 11; background: var(--accent); color: #fff;
+                   border: 0; border-radius: var(--radius-sm); padding: 11px 20px; font: 600 14px 'Inter', sans-serif; cursor: pointer;
+                   box-shadow: 0 8px 24px rgba(0,0,0,.35); transition: background .15s; }
+    #center-hint:hover { background: var(--accent-hover); }
+    #center-hint.hidden { display: none; }
+    #reticle { position: fixed; left: 50%; top: 50%; width: 12px; height: 12px; transform: translate(-50%, -50%); z-index: 11;
+               border: 1.5px solid #fff; border-radius: 50%; box-shadow: 0 0 0 1px rgba(0,0,0,.4); }
+    #reticle-label { position: fixed; left: 50%; top: calc(50% + 22px); transform: translateX(-50%); z-index: 11; background: rgba(15,17,21,.85);
+                     color: var(--text); font: 500 11px 'Inter', sans-serif; padding: 3px 8px; border-radius: 5px; }
+    #carry-hint { position: fixed; left: 50%; bottom: 80px; transform: translateX(-50%); z-index: 11; background: var(--surface); color: var(--text);
+                  border: 1px solid var(--edge); border-radius: var(--radius-sm); padding: 7px 12px; font-size: 12px; backdrop-filter: var(--blur); }
+    #toast { position: fixed; left: 50%; top: 16px; transform: translateX(-50%); z-index: 30; background: #f3f4f6; color: #111827; padding: 8px 14px;
+             border-radius: var(--radius-sm); font-size: 12px; font-weight: 500; display: none; box-shadow: var(--shadow); }
+    #readout { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) translateY(-90px); z-index: 25; background: var(--surface);
+               color: var(--text); border: 1px solid var(--edge-strong); border-radius: var(--radius-sm); padding: 8px 12px; font-size: 12px; font-weight: 500;
+               display: none; box-shadow: var(--shadow); font-variant-numeric: tabular-nums; }
+
+    #toolbar { position: fixed; top: 246px; left: 16px; width: 200px; z-index: 10; display: flex; flex-direction: column;
+               background: var(--surface); backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
+               border: 1px solid var(--edge); border-radius: var(--radius); box-shadow: var(--shadow); padding: 4px; }
+    #toolbar.hidden { display: none; }
+    #toolbar button { display: flex; align-items: center; justify-content: space-between; background: transparent; color: var(--text);
+                      border: 0; border-radius: var(--radius-sm); padding: 8px 10px; font-size: 13px; font-weight: 500; text-align: left; }
+    #toolbar button:hover { background: rgba(255,255,255,.06); }
+    #toolbar button.on { background: var(--accent-soft); color: #93c5fd; }
+    #toolbar button.on kbd { color: #93c5fd; border-color: rgba(147,197,253,.4); }
+
+    #status-bar { position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%); z-index: 20; background: var(--surface); backdrop-filter: var(--blur);
+                  border: 1px solid var(--edge); border-radius: var(--radius-sm); padding: 6px 14px; display: flex; gap: 16px; font-size: 11px;
+                  color: var(--muted); pointer-events: none; box-shadow: var(--shadow); }
+    .status-item { display: flex; align-items: center; gap: 6px; }
+    .status-item[hidden] { display: none; }
+    .status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--ok); }
+    .status-dot.warning { background: var(--amber); }
+    @media (max-width: 1000px) { #status-bar, #map-wrap { display: none; } }
+    #scene-info { display: none; }
+
+    /* Phones (portrait, or landscape on a touch screen): the same panels, rearranged for a thumb.
+       Header on top, a bottom bar of large buttons, and the list, card and floor plan as sheets
+       above the bar. Desktop layout above is untouched; everything below is phone only. */
+    #toolbar .phone-only, #joystick { display: none; }
+    @media (max-width: 760px), (hover: none) and (pointer: coarse) and (max-height: 500px) {
+      :root { --gap: 8px; --bar: calc(64px + env(safe-area-inset-bottom)); }
+      html, body { overscroll-behavior: none; -webkit-tap-highlight-color: transparent; }
+      body { -webkit-user-select: none; user-select: none; }
+      #canvas-container, #canvas-container canvas { height: 100dvh; }
+      input { -webkit-user-select: text; user-select: text; }
+
+      #hud { top: max(var(--gap), env(safe-area-inset-top)); left: max(var(--gap), env(safe-area-inset-left));
+             right: max(var(--gap), env(safe-area-inset-right)); width: auto; padding: 10px 12px; }
+      .hud-top { margin-bottom: 4px; }
+      #hud .eyebrow { display: none; }
+      #scene-select { max-width: 100%; font-size: 13px; padding: 6px 28px 6px 10px; }
+      #title { font-size: 16px; }
+      #subtitle { font-size: 11px; margin-top: 4px; }
+      #style-toggle button { font-size: 12px; padding: 6px 9px; }
+
+      #status-stamp, #ref-panel, #help, #status-bar, #btn-sandbox, #sandbox { display: none !important; }
+
+      #toolbar { top: auto !important; left: max(var(--gap), env(safe-area-inset-left)); right: max(var(--gap), env(safe-area-inset-right));
+                 bottom: max(var(--gap), env(safe-area-inset-bottom)); width: auto; flex-direction: row; gap: 2px; z-index: 20; }
+      #toolbar button { flex: 1; justify-content: center; padding: 12px 4px; font-size: 13px; min-width: 0; }
+      #toolbar button:hover { background: transparent; }
+      #toolbar button.on { background: var(--accent-soft); }
+      #toolbar kbd { display: none; }
+      #toolbar .phone-only { display: flex; }
+      #toolbar .phone-only[hidden] { display: none; }
+
+      /* Find in scene: a sheet over the lower half, opened from the bar */
+      #search-panel { display: none; top: auto; bottom: var(--bar); left: var(--gap); right: var(--gap); width: auto; z-index: 19; }
+      body.find-open #search-panel { display: block; }
+      .search-box input { font-size: 16px; }  /* 16px stops iOS zooming into the field */
+      .search-box button { padding: 10px 14px; }
+      #obj-list-items { max-height: 42dvh; }
+      .obj-row { padding: 11px 8px; }
+      .obj-list-head span:last-child { display: none; }
+
+      /* the selected piece: a sheet above the bar */
+      #obj-card { top: auto; bottom: var(--bar); left: var(--gap); right: var(--gap); width: auto; max-height: 50dvh; overflow-y: auto; z-index: 19; }
+      #obj-photo img { max-height: 130px; }
+      #obj-card .note { display: none; }
+      #obj-dims { display: grid; grid-template-columns: repeat(3, 1fr); column-gap: 10px; }
+      #obj-dims .dim { grid-template-columns: 1fr; }
+      #obj-dims .dim b, #obj-dims .dim em { text-align: left; grid-column: 1; }
+      #obj-card .actions button { padding: 11px 10px; }
+
+      /* floor plan: a small corner map, from the bar's Map button */
+      body.map-open #map-wrap { display: block; top: auto; bottom: calc(var(--bar) + 4px); right: var(--gap); width: 156px; z-index: 18; }
+      body.map-open.inspecting #map-wrap, body.map-open.find-open #map-wrap { display: none; }
+      #map-wrap .panel-label, #map-legend { display: none; }
+      #minimap { width: 156px; height: 156px; }
+
+      #center-hint { padding: 13px 22px; font-size: 15px; }
+      body.find-open #center-hint { display: none; }
+      #readout { top: auto; bottom: calc(var(--bar) + 12px); transform: translateX(-50%); max-width: calc(100vw - 32px); text-align: center; }
+      #toast { top: auto; bottom: calc(var(--bar) + 12px); }
+
+      /* walking: a thumb stick bottom left; dragging anywhere else turns the view */
+      body.touch-walk #joystick { display: block; position: fixed; left: max(20px, env(safe-area-inset-left)); bottom: calc(var(--bar) + 16px);
+                                  width: 124px; height: 124px; border-radius: 50%; z-index: 17; touch-action: none;
+                                  background: rgba(22, 24, 29, .55); border: 1px solid var(--edge-strong); backdrop-filter: var(--blur);
+                                  -webkit-backdrop-filter: var(--blur); box-shadow: var(--shadow); }
+      #joy-knob { position: absolute; left: 50%; top: 50%; width: 54px; height: 54px; margin: -27px 0 0 -27px; border-radius: 50%;
+                  background: rgba(243, 244, 246, .9); box-shadow: 0 2px 10px rgba(0,0,0,.4); pointer-events: none; }
+      body.touch-walk.map-open #map-wrap { bottom: calc(var(--bar) + 4px); }
+    }
+    /* phone on its side: little height, so header and sheets keep to the left half */
+    @media (hover: none) and (pointer: coarse) and (max-height: 500px) {
+      #hud { right: auto; width: min(380px, 55vw); padding: 8px 12px; }
+      #subtitle { display: none; }
+      #search-panel, #obj-card { top: max(var(--gap), env(safe-area-inset-top)); right: auto; width: min(380px, 55vw); max-height: none; }
+      #obj-card { left: auto; right: max(var(--gap), env(safe-area-inset-right)); }
+      #obj-list-items { max-height: calc(100dvh - 190px); }
+      #obj-card { bottom: var(--bar); overflow-y: auto; }
+      #obj-photo img { max-height: 90px; }
+      #toolbar { left: auto; width: min(460px, 58vw); }
+      body.touch-walk #joystick { bottom: max(16px, env(safe-area-inset-bottom)); }
+    }
+  </style>
+</head>
+<body>
+  <div id="canvas-container"></div>
+
+  <header id="hud" class="panel">
+    <div class="hud-top">
+      <div class="eyebrow">Spatial Engine</div>
+      <select id="scene-select" aria-label="Switch model" title="Switch model"></select>
+    </div>
+    <div class="title-row">
+      <div id="title">Scene twin</div>
+      <div id="style-toggle" role="group" aria-label="View style" hidden>
+        <button data-style="photoreal" title="Photoreal gaussian splats">Photoreal</button>
+        <button data-style="blueprint" title="Line blueprint of the same house">Blueprint</button>
+        <button id="btn-overlay" title="Draw the blueprint over the photoreal model, to check they line up" hidden>Overlay</button>
+      </div>
+    </div>
+    <div id="subtitle">Loading…</div>
+  </header>
+
+  <div id="status-stamp">Live</div>
+
+  <section id="search-panel" class="panel" aria-label="Spatial POI search">
+    <div class="panel-label">Find in scene</div>
+    <div class="search-box">
+      <input type="text" id="search-input" placeholder="Search objects, e.g. espresso machine" autocomplete="off">
+      <button id="search-btn">Search</button>
+    </div>
+    <div class="nav-info" id="nav-info">
+      <div class="row"><span>Distance</span><span class="value" id="nav-distance">-</span></div>
+      <div class="row"><span>Clearance</span><span class="value" id="nav-clearance">-</span></div>
+      <div class="row"><span>Waypoints</span><span class="value" id="nav-waypoints">-</span></div>
+      <button class="clear-btn" id="clear-path-btn">Clear route</button>
+    </div>
+    <div class="poi-results" id="poi-results"></div>
+    <div id="obj-list" hidden>
+      <div class="obj-list-head"><span id="obj-count"></span><span>Click to inspect</span></div>
+      <div id="obj-list-items"></div>
+    </div>
+  </section>
+
+  <aside id="ref-panel" class="panel empty" aria-label="Real frame reference">
+    <div class="panel-label">Captured frame</div>
+    <img id="ref-img" alt="Captured interior frame">
+    <small>Frame from the original capture</small>
+  </aside>
+
+  <section id="map-wrap" class="panel" aria-label="Navigation map">
+    <div class="panel-label">Floor plan</div>
+    <canvas id="minimap" width="500" height="500"></canvas>
+    <div id="map-legend">
+      <span><i class="sw-you"></i>you</span>
+      <span><i class="sw-free"></i>open</span>
+      <span><i class="sw-obstacle"></i>blocked</span>
+      <span><i class="sw-unknown"></i>unseen</span>
+      <span><i class="sw-path"></i>capture</span>
+      <span id="legend-route" style="display:none"><i class="sw-route"></i>route</span>
+      <span id="legend-prop" style="display:none"><i class="sw-prop"></i>placed</span>
+    </div>
+  </section>
+
+  <section id="obj-card" class="panel hidden" aria-label="Selected object" aria-live="polite">
+    <div class="head"><div class="panel-label">Selected object</div><button id="obj-close" title="Close (Esc)" aria-label="Close">×</button></div>
+    <div id="obj-photo"><img id="obj-img" alt=""></div>
+    <div id="obj-name"></div>
+    <div id="obj-type"></div>
+    <div id="obj-dims"></div>
+    <div class="note">Measured from the capture. Values marked typical are standard for this kind of piece.</div>
+    <div class="actions"><button id="obj-orbit">Orbit 360°</button></div>
+  </section>
+  <div id="obj-tip" class="hidden"></div>
+
+  <div id="center-hint">Enter the scene</div>
+  <div id="reticle" class="hidden"></div>
+  <div id="reticle-label" class="hidden"></div>
+  <div id="carry-hint" class="hidden"></div>
+  <div id="toast"></div>
+  <div id="readout"></div>
+
+  <section id="sandbox" class="panel hidden" aria-label="Sandbox controls">
+    <div class="sb-head"><span>Prop tray <em id="sandbox-count">0 placed</em></span><button id="sandbox-close" title="Exit (G)" aria-label="Exit sandbox">×</button></div>
+    <div class="panel-label">Objects</div>
+    <div id="prop-palette">
+      <button data-prop="cone"><kbd>1</kbd>Cone</button>
+      <button data-prop="barrier"><kbd>2</kbd>Barrier</button>
+      <button data-prop="crate"><kbd>3</kbd>Crate</button>
+      <button data-prop="sign"><kbd>4</kbd>Sign</button>
+    </div>
+    <div id="sandbox-carry-actions" class="hidden">
+      <button id="sandbox-place">Place</button>
+      <button id="sandbox-rotate">Rotate</button>
+      <button id="sandbox-cancel">Cancel</button>
+    </div>
+    <div id="sandbox-actions">
+      <button id="sandbox-route">Route to last</button>
+      <button id="sandbox-clear">Clear</button>
+      <button id="sandbox-share">Share</button>
+    </div>
+    <div id="sandbox-hint"><b>1–4</b> add · <b>Click</b> place · <b>R</b> rotate · <b>Del</b> remove · <b>T</b> route · <b>G</b> close</div>
+  </section>
+
+  <div id="help"><b>Drag</b> look <b>O</b> look around <b>[ ]</b> capture spots <b>F</b> walk <b>M</b> overview <b>U</b> measure <b>G</b> prop tray
+    <span>Esc leaves walk mode</span></div>
+
+  <div id="toolbar">
+    <button id="btn-walk">Walk<kbd>F</kbd></button>
+    <button id="btn-plan">Overview<kbd>M</kbd></button>
+    <button id="btn-measure">Measure<kbd>U</kbd></button>
+    <button id="btn-sandbox">Prop tray<kbd>G</kbd></button>
+    <button id="btn-find" class="phone-only" hidden>Find</button>
+    <button id="btn-map" class="phone-only" hidden>Map</button>
+  </div>
+  <div id="joystick" aria-label="Walk: drag the stick"><div id="joy-knob"></div></div>
+
+  <div id="status-bar">
+    <div class="status-item"><span class="status-dot" id="conn-status"></span><span id="conn-text">Connecting…</span></div>
+    <div class="status-item"><span class="status-dot" id="mesh-status"></span><span id="mesh-text">Mesh: -</span></div>
+    <div class="status-item"><span class="status-dot" id="splat-status"></span><span id="splat-text">Splats: -</span></div>
+    <div class="status-item" id="gpu-item" hidden><span class="status-dot warning" id="gpu-status"></span><span id="gpu-text"></span></div>
+  </div>
+  <div id="scene-info"></div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

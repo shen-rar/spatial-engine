@@ -1,0 +1,640 @@
+[
+ {
+  "id": "staircase",
+  "type": "staircase",
+  "center": [
+   -5.324,
+   -4.376
+  ],
+  "size": [
+   2.6,
+   1.1
+  ],
+  "height": 2.06,
+  "facing_plan": [
+   0.0,
+   -1.0
+  ]
+ },
+ {
+  "id": "armchair_1",
+  "type": "armchair",
+  "center": [
+   0.953,
+   -1.17
+  ],
+  "size": [
+   1.05,
+   1.05
+  ],
+  "height": 0.98,
+  "facing_plan": [
+   0.0236,
+   -0.9997
+  ]
+ },
+ {
+  "id": "armchair_2",
+  "type": "armchair",
+  "center": [
+   1.577,
+   -4.933
+  ],
+  "size": [
+   1.05,
+   1.05
+  ],
+  "height": 1.1,
+  "facing_plan": [
+   -1.0,
+   0.0
+  ]
+ },
+ {
+  "id": "marble_table",
+  "type": "coffee_table",
+  "center": [
+   1.459,
+   -2.818
+  ],
+  "size": [
+   1.4,
+   1.4
+  ],
+  "height": 0.82,
+  "facing_plan": [
+   0.0371,
+   -0.9993
+  ]
+ },
+ {
+  "id": "dining",
+  "type": "dining_set",
+  "center": [
+   -4.334,
+   -0.287
+  ],
+  "size": [
+   3.2,
+   2.2
+  ],
+  "height": 1.19,
+  "facing_plan": [
+   0.6695,
+   0.7428
+  ]
+ },
+ {
+  "id": "sofa_back",
+  "type": "sofa",
+  "center": [
+   2.37,
+   4.94
+  ],
+  "size": [
+   2.31,
+   0.95
+  ],
+  "height": 0.93,
+  "facing_plan": [
+   0.0584,
+   -0.9983
+  ]
+ },
+ {
+  "id": "sofa_side",
+  "type": "sofa",
+  "center": [
+   0.55,
+   4.588
+  ],
+  "size": [
+   0.95,
+   2.44
+  ],
+  "height": 1.09,
+  "facing_plan": [
+   0.9987,
+   0.0502
+  ]
+ },
+ {
+  "id": "tub_chair_1",
+  "type": "armchair",
+  "center": [
+   1.918,
+   2.343
+  ],
+  "size": [
+   0.85,
+   0.85
+  ],
+  "height": 0.99,
+  "facing_plan": [
+   0.0,
+   1.0
+  ]
+ },
+ {
+  "id": "tub_chair_2",
+  "type": "armchair",
+  "center": [
+   0.649,
+   2.695
+  ],
+  "size": [
+   1.05,
+   1.05
+  ],
+  "height": 1.1,
+  "facing_plan": [
+   -0.0691,
+   0.9976
+  ]
+ },
+ {
+  "id": "coffee_table",
+  "type": "coffee_table",
+  "center": [
+   2.495,
+   4.071
+  ],
+  "size": [
+   1.4,
+   1.4
+  ],
+  "height": 0.62,
+  "facing_plan": [
+   0.0584,
+   -0.9983
+  ]
+ },
+ {
+  "id": "side_table",
+  "type": "side_table",
+  "center": [
+   -0.41,
+   4.183
+  ],
+  "size": [
+   0.7,
+   0.7
+  ],
+  "height": 0.72,
+  "facing_plan": [
+   0.0584,
+   -0.9983
+  ]
+ },
+ {
+  "id": "stick_chandelier",
+  "type": "chandelier",
+  "center": [
+   -3.746,
+   0.063
+  ],
+  "size": [
+   1.79,
+   1.79
+  ],
+  "height": 3.44,
+  "facing_plan": [
+   0.0,
+   -1.0
+  ],
+  "plan_yaw": 0.436332,
+  "base": 2.19
+ },
+ {
+  "id": "floor_lamp",
+  "type": "floor_lamp",
+  "center": [
+   -6.405,
+   2.581
+  ],
+  "size": [
+   0.7,
+   0.7
+  ],
+  "height": 2.43,
+  "facing_plan": [
+   0.0236,
+   -0.9997
+  ],
+  "plan_yaw": 0.436332
+ },
+ {
+  "id": "console_lamp",
+  "type": "table_lamp",
+  "center": [
+   -4.037,
+   0.081
+  ],
+  "size": [
+   0.51,
+   0.51
+  ],
+  "height": 2.01,
+  "facing_plan": [
+   0.0236,
+   -0.9997
+  ],
+  "plan_yaw": 0.436332,
+  "base": 1.5
+ },
+ {
+  "id": "dining_bowl",
+  "type": "decor",
+  "center": [
+   -3.966,
+   -0.049
+  ],
+  "size": [
+   0.46,
+   0.46
+  ],
+  "height": 1.37,
+  "facing_plan": [
+   0.0236,
+   -0.9997
+  ],
+  "plan_yaw": 0.436332,
+  "base": 0.92
+ },
+ {
+  "id": "glass_vase_1",
+  "type": "vase",
+  "center": [
+   -3.536,
+   0.251
+  ],
+  "size": [
+   0.24,
+   0.24
+  ],
+  "height": 1.57,
+  "facing_plan": [
+   0.0236,
+   -0.9997
+  ],
+  "plan_yaw": 0.436332,
+  "base": 1.0
+ },
+ {
+  "id": "glass_vase_2",
+  "type": "vase",
+  "center": [
+   -4.928,
+   -0.279
+  ],
+  "size": [
+   0.3,
+   0.3
+  ],
+  "height": 1.34,
+  "facing_plan": [
+   0.0236,
+   -0.9997
+  ],
+  "plan_yaw": 0.436332,
+  "base": 0.89
+ },
+ {
+  "id": "dining_art",
+  "type": "wall_art",
+  "center": [
+   -5.138,
+   5.153
+  ],
+  "size": [
+   2.4,
+   0.04
+  ],
+  "height": 2.98,
+  "facing_plan": [
+   0.0236,
+   -0.9997
+  ],
+  "plan_yaw": 0.436332,
+  "base": 1.5
+ },
+ {
+  "id": "dining_rug",
+  "type": "rug",
+  "center": [
+   -3.161,
+   -2.309
+  ],
+  "size": [
+   3.08,
+   2.2
+  ],
+  "height": 0.02,
+  "facing_plan": [
+   0.0,
+   -1.0
+  ],
+  "plan_yaw": 0.436332
+ },
+ {
+  "id": "fig_plant",
+  "type": "plant",
+  "center": [
+   1.924,
+   -2.647
+  ],
+  "size": [
+   0.86,
+   0.86
+  ],
+  "height": 2.71,
+  "facing_plan": [
+   0.0,
+   -1.0
+  ],
+  "plan_yaw": 0.436332
+ },
+ {
+  "id": "white_sculpture",
+  "type": "sculpture",
+  "center": [
+   1.707,
+   -3.042
+  ],
+  "size": [
+   0.2,
+   0.2
+  ],
+  "height": 1.21,
+  "facing_plan": [
+   0.0,
+   -1.0
+  ],
+  "plan_yaw": 0.436332,
+  "base": 0.61
+ },
+ {
+  "id": "far_vase",
+  "type": "vase",
+  "center": [
+   2.422,
+   4.444
+  ],
+  "size": [
+   0.4,
+   0.4
+  ],
+  "height": 1.75,
+  "facing_plan": [
+   0.0,
+   -1.0
+  ],
+  "plan_yaw": 0.436332,
+  "base": 0.84
+ },
+ {
+  "id": "hide_rug",
+  "type": "rug",
+  "center": [
+   0.818,
+   -2.442
+  ],
+  "size": [
+   3.0,
+   2.2
+  ],
+  "height": 0.02,
+  "facing_plan": [
+   0.0,
+   -1.0
+  ],
+  "plan_yaw": 0.436332
+ },
+ {
+  "id": "hall_art",
+  "type": "wall_art",
+  "center": [
+   -2.162,
+   6.05
+  ],
+  "size": [
+   0.04,
+   0.69
+  ],
+  "height": 3.41,
+  "facing_plan": [
+   1.0,
+   0.0
+  ],
+  "plan_yaw": 0.436332,
+  "base": 1.24
+ },
+ {
+  "id": "big_painting",
+  "type": "wall_art",
+  "center": [
+   -2.248,
+   6.813
+  ],
+  "size": [
+   0.04,
+   1.9
+  ],
+  "height": 3.72,
+  "facing_plan": [
+   1.0,
+   0.0
+  ],
+  "plan_yaw": 0.436332,
+  "base": 0.74
+ },
+ {
+  "id": "fireplace",
+  "type": "fireplace",
+  "center": [
+   5.242,
+   3.709
+  ],
+  "size": [
+   0.3,
+   1.24
+  ],
+  "height": 1.36,
+  "facing_plan": [
+   -0.9983,
+   -0.0586
+  ],
+  "plan_yaw": 0.436332,
+  "base": 0.55
+ },
+ {
+  "id": "table_lamp",
+  "type": "table_lamp",
+  "center": [
+   -0.38,
+   4.496
+  ],
+  "size": [
+   0.6,
+   0.6
+  ],
+  "height": 1.35,
+  "facing_plan": [
+   0.0584,
+   -0.9983
+  ],
+  "plan_yaw": 0.436332,
+  "base": 0.46
+ },
+ {
+  "id": "gold_pouf",
+  "type": "ottoman",
+  "center": [
+   1.865,
+   3.019
+  ],
+  "size": [
+   0.68,
+   0.68
+  ],
+  "height": 0.53,
+  "facing_plan": [
+   0.0,
+   -1.0
+  ],
+  "plan_yaw": 0.436332
+ },
+ {
+  "id": "pattern_vases",
+  "type": "vase",
+  "center": [
+   2.226,
+   4.564
+  ],
+  "size": [
+   0.48,
+   0.48
+  ],
+  "height": 0.99,
+  "facing_plan": [
+   0.0,
+   -1.0
+  ],
+  "plan_yaw": 0.436332,
+  "base": 0.61
+ },
+ {
+  "id": "book_tray",
+  "type": "decor",
+  "center": [
+   2.698,
+   4.161
+  ],
+  "size": [
+   0.37,
+   0.37
+  ],
+  "height": 0.99,
+  "facing_plan": [
+   0.0,
+   -1.0
+  ],
+  "plan_yaw": 0.436332,
+  "base": 0.8
+ },
+ {
+  "id": "cushion_left",
+  "type": "cushion",
+  "center": [
+   2.644,
+   1.958
+  ],
+  "size": [
+   0.15,
+   0.53
+  ],
+  "height": 1.23,
+  "facing_plan": [
+   -1.0,
+   0.0
+  ],
+  "plan_yaw": 0.436332,
+  "base": 0.94
+ },
+ {
+  "id": "cushion_back_1",
+  "type": "cushion",
+  "center": [
+   3.077,
+   4.505
+  ],
+  "size": [
+   0.37,
+   0.15
+  ],
+  "height": 1.37,
+  "facing_plan": [
+   0.0,
+   -1.0
+  ],
+  "plan_yaw": 0.436332,
+  "base": 0.95
+ },
+ {
+  "id": "cushion_back_2",
+  "type": "cushion",
+  "center": [
+   1.66,
+   5.285
+  ],
+  "size": [
+   0.5,
+   0.15
+  ],
+  "height": 1.34,
+  "facing_plan": [
+   0.0584,
+   -0.9983
+  ],
+  "plan_yaw": 0.436332,
+  "base": 0.93
+ },
+ {
+  "id": "cushion_right_1",
+  "type": "cushion",
+  "center": [
+   0.354,
+   4.733
+  ],
+  "size": [
+   0.15,
+   0.57
+  ],
+  "height": 1.43,
+  "facing_plan": [
+   1.0,
+   0.0
+  ],
+  "plan_yaw": 0.436332,
+  "base": 1.03
+ },
+ {
+  "id": "cushion_right_2",
+  "type": "cushion",
+  "center": [
+   0.357,
+   2.865
+  ],
+  "size": [
+   0.15,
+   0.47
+  ],
+  "height": 1.26,
+  "facing_plan": [
+   1.0,
+   0.0
+  ],
+  "plan_yaw": 0.436332,
+  "base": 0.89
+ }
+]

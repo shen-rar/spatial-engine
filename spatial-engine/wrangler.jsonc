@@ -1,0 +1,9 @@
+// Cloudflare deploy of the static site: `python export_static.py site`, then `npx wrangler deploy`.
+// _headers (cross-origin isolation) and _redirects (API paths -> exported JSON) live in site/.
+{
+  "name": "spatial-engine",
+  "compatibility_date": "2026-10-23",
+  "assets": {
+    "directory": "site"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "name": "spatial-engine-frontend",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "ksplat": "node scripts/make-ksplat.mjs"
+  },
+  "dependencies": {
+    "three": "^0.160.0",
+    "@mkkellogg/gaussian-splats-3d": "^0.4.7",
+    "three-mesh-bvh": "^0.7.0"
+  },
+  "devDependencies": {
+    "vite": "^5.0.0"
+  }
+}
